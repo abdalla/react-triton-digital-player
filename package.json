@@ -1,0 +1,46 @@
+{
+  "name": "react-triton-digital-player",
+  "version": "0.0.2",
+  "description": "react component to use triton digital sdk into react app",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "babel src --out-dir dist",
+    "test": "npm t",
+    "lint": "eslint .",
+    "prepublish": "yarn clean && yarn build",
+    "format": "prettier --write \"{test,src}/**/*.js\" *.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdalla/react-triton-digital-player.git"
+  },
+  "keywords": [
+    "triton",
+    "digital",
+    "online",
+    "stream",
+    "radio",
+    "react",
+    "TDSdk"
+  ],
+  "author": "Carlos Abdalla",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/abdalla/react-triton-digital-player/issues"
+  },
+  "homepage": "https://github.com/abdalla/react-triton-digital-player#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.2",
+    "babel-jest": "^21.2.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "eslint": "^4.11.0",
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1",
+    "rimraf": "^2.6.2"
+  }
+}
