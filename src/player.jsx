@@ -40,8 +40,7 @@ class Player extends Component {
 		};
 
 		//Player instance
-		//eslint-disable-next-line
-		player = new TDSdk(tdPlayerConfig);
+		player = new window.TDSdk(tdPlayerConfig);
 	}
 
 	onPlayerReady() {
