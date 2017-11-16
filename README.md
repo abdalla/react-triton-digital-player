@@ -47,14 +47,22 @@ import Player from 'react-triton-digital-player';
 
 class App extends Component {
 	render() {
+	const options = {
+			setExternalProps: this.setExternalProps,
+			onAdBlockerDetected: this.onAdBlockerDetected,
+			autoPlay: true,
+			showPlayButton: true,
+			showStopButton: true,
+			showResumeButton: true,
+			showPauseButton: true
+  };
+  		
 		return (
 			<div className="App">
 				<header className="App-header">
 					<h1 className="App-title">MY APP</h1>
 				</header>
-
-				<Player station="YOUR_STATION" options={options} />
-
+				<Player station="NOVA_CAMPINAS" options={options} />
 			</div>
 		);
 	}
