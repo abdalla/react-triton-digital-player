@@ -107,7 +107,7 @@
 			"jsxBracketSameLine": true,
 			"parser": "babylon",
 			"useTabs": true,
-			"tabWidth": 2
+			"tabWidth": 1
 		}]
 	}
 }

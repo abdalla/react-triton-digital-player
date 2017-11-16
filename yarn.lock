@@ -1747,6 +1747,10 @@ kind-of@^4.0.0:
   dependencies:
     is-buffer "^1.1.5"
 
+latinize@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/latinize/-/latinize-0.4.0.tgz#27439b21e4eb7506c37717b638f1df2c49075a48"
+
 levn@^0.3.0, levn@~0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/levn/-/levn-0.3.0.tgz#3b09924edf9f083c0490fdd4c0bc4421e04764ee"

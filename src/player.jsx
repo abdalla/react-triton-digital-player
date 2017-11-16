@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import latinize from 'latinize';
 
 let player;
 
@@ -44,8 +45,13 @@ class Player extends Component {
 	}
 
 	onPlayerReady() {
+		const { options } = this.props;
+
 		player.addEventListener('track-cue-point', this.onTrackCuePoint);
-		player.play({ station: this.state.station });
+
+		if (options && options.autoPlay) {
+			player.play({ station: this.state.station });
+		}
 	}
 
 	onConfigurationError(object) {
@@ -64,17 +70,34 @@ class Player extends Component {
 
 	/* Callback function called to notify that a new Track CuePoint comes in. */
 	onTrackCuePoint(e) {
+		const { options } = this.props;
 		this.setState({
 			artistName: e.data.cuePoint.artistName,
 			musicTitle: e.data.cuePoint.cueTitle
 		});
+
+		if (options && options.setExternalProps) {
+			options.setExternalProps({
+				artistName: e.data.cuePoint.artistName,
+				formatedArtistName: latinize(e.data.cuePoint.artistName).replace(
+					' ',
+					'_'
+				),
+				musicTitle: e.data.cuePoint.cueTitle
+			});
+		}
 	}
 	/* Callback function called to notify that an Ad-Blocker was detected */
 	onAdBlockerDetected() {
-		console.log('AdBlockerDetected');
+		const { options } = this.props;
+		if (options && options.onAdBlockerDetected) {
+			options.onAdBlockerDetected();
+		}
 	}
 
 	render() {
+		const { options } = this.props;
+
 		return (
 			<div>
 				<div id="td_container" />
@@ -85,24 +108,54 @@ class Player extends Component {
 				<span>Music Title:</span>
 				{this.state.musicTitle}
 				<div>
-					<button
-						onClick={e => {
-							e.preventDefault();
-							player.resume();
-						}}>
-						{' '}
-						>{' '}
-					</button>
+					{options &&
+						options.showPlayButton && (
+							<button
+								onClick={e => {
+									e.preventDefault();
+									player.play({ station: this.state.station });
+								}}>
+								PLAY
+							</button>
+						)}
 				</div>
 				<div>
-					<button
-						onClick={e => {
-							e.preventDefault();
-							player.pause();
-						}}>
-						{' '}
-						>||
-					</button>
+					{options &&
+						options.showStopButton && (
+							<button
+								onClick={e => {
+									e.preventDefault();
+									player.stop();
+								}}>
+								{' '}
+								STOP
+							</button>
+						)}
+				</div>
+				<div>
+					{options &&
+						options.showPauseButton && (
+							<button
+								onClick={e => {
+									e.preventDefault();
+									player.pause();
+								}}>
+								{' '}
+								PAUSE
+							</button>
+						)}
+				</div>
+				<div>
+					{options &&
+						options.showResumeButton && (
+							<button
+								onClick={e => {
+									e.preventDefault();
+									player.resume();
+								}}>
+								RESUME
+							</button>
+						)}
 				</div>
 			</div>
 		);
