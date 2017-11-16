@@ -39,7 +39,7 @@ import Player from 'react-triton-digital-player';
 
 *OBS:* **options are optional.** 
 
-###EXAMPLE
+### EXAMPLE
 
 ```
 import React, { Component } from 'react';
