@@ -25,7 +25,7 @@ yarn add react-triton-digital-player
 
 #### *ES5*
 ```
-var Player require('react-triton-digital-player');
+var Player = require('react-triton-digital-player');
 ```
 
 #### *ES6*
