@@ -4,30 +4,6 @@ import latinize from 'latinize';
 
 let player;
 
-export const getVolume = () => {
-	player.getVolume();
-};
-
-export const setVolume = newVol => {
-	player.setVolume(newVol);
-};
-
-export const play = station => {
-	player.play(station);
-};
-
-export const stop = () => {
-	player.stop();
-};
-
-export const pause = () => {
-	player.pause();
-};
-
-export const resume = () => {
-	player.resume();
-};
-
 class Player extends Component {
 	constructor(props, context) {
 		super(props, context);
@@ -48,24 +24,24 @@ class Player extends Component {
 		this.initPlayerSDK();
 	}
 
-	setVolume(newVol) {
-		setVolume(newVol);
+	static setVolume(newVol) {
+		player.setVolume(newVol);
 	}
 
-	play() {
-		play({ station: this.state.station });
+	static play() {
+		player.play({ station: this.state.station });
 	}
 
-	stop() {
-		stop();
+	static stop() {
+		player.stop();
 	}
 
-	pause() {
-		pause();
+	static pause() {
+		player.pause();
 	}
 
-	resume() {
-		resume();
+	static resume() {
+		player.resume();
 	}
 
 	initPlayerSDK() {
@@ -215,5 +191,11 @@ Player.propTypes = {
 	station: PropTypes.string.isRequired,
 	options: PropTypes.object
 };
+
+export const setVolume = Player.setVolume;
+export const play = Player.play;
+export const stop = Player.stop;
+export const pause = Player.pause;
+export const resume = Player.resume;
 
 export default Player;

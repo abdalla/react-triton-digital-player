@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.resume = exports.pause = exports.stop = exports.play = exports.setVolume = exports.getVolume = undefined;
+exports.resume = exports.pause = exports.stop = exports.play = exports.setVolume = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -28,36 +28,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var player = void 0;
-
-var getVolume = exports.getVolume = function getVolume() {
-	player.getVolume();
-};
-
-var _setVolume = function _setVolume(newVol) {
-	player.setVolume(newVol);
-};
-
-exports.setVolume = _setVolume;
-var _play = function _play(station) {
-	player.play(station);
-};
-
-exports.play = _play;
-var _stop = function _stop() {
-	player.stop();
-};
-
-exports.stop = _stop;
-var _pause = function _pause() {
-	player.pause();
-};
-
-exports.pause = _pause;
-var _resume = function _resume() {
-	player.resume();
-};
-
-exports.resume = _resume;
 
 var Player = function (_Component) {
 	_inherits(Player, _Component);
@@ -85,31 +55,6 @@ var Player = function (_Component) {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
 			this.initPlayerSDK();
-		}
-	}, {
-		key: 'setVolume',
-		value: function setVolume(newVol) {
-			_setVolume(newVol);
-		}
-	}, {
-		key: 'play',
-		value: function play() {
-			_play({ station: this.state.station });
-		}
-	}, {
-		key: 'stop',
-		value: function stop() {
-			_stop();
-		}
-	}, {
-		key: 'pause',
-		value: function pause() {
-			_pause();
-		}
-	}, {
-		key: 'resume',
-		value: function resume() {
-			_resume();
 		}
 	}, {
 		key: 'initPlayerSDK',
@@ -275,6 +220,31 @@ var Player = function (_Component) {
 				)
 			);
 		}
+	}], [{
+		key: 'setVolume',
+		value: function setVolume(newVol) {
+			player.setVolume(newVol);
+		}
+	}, {
+		key: 'play',
+		value: function play() {
+			player.play({ station: this.state.station });
+		}
+	}, {
+		key: 'stop',
+		value: function stop() {
+			player.stop();
+		}
+	}, {
+		key: 'pause',
+		value: function pause() {
+			player.pause();
+		}
+	}, {
+		key: 'resume',
+		value: function resume() {
+			player.resume();
+		}
 	}]);
 
 	return Player;
@@ -284,5 +254,11 @@ Player.propTypes = {
 	station: _propTypes2.default.string.isRequired,
 	options: _propTypes2.default.object
 };
+
+var setVolume = exports.setVolume = Player.setVolume;
+var play = exports.play = Player.play;
+var stop = exports.stop = Player.stop;
+var pause = exports.pause = Player.pause;
+var resume = exports.resume = Player.resume;
 
 exports.default = Player;
