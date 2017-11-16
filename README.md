@@ -62,7 +62,7 @@ class App extends Component {
 				<header className="App-header">
 					<h1 className="App-title">MY APP</h1>
 				</header>
-				<Player station="NOVA_CAMPINAS" options={options} />
+				<Player station="YOUR_STATION" options={options} />
 			</div>
 		);
 	}
