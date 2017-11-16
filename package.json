@@ -1,6 +1,6 @@
 {
   "name": "react-triton-digital-player",
-  "version": "0.0.7-beta",
+  "version": "0.0.8-beta",
   "description": "react component to use triton digital sdk into react app",
   "main": "index.js",
   "scripts": {
