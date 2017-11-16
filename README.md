@@ -14,14 +14,23 @@ You have to import the Triton Digital SDK into you app.
 
 # how to use
 
+#### Install
+```
+npm i react-triton-digital-player
+```
+or
+```
+yarn add react-triton-digital-player
+```
+
 #### *ES5*
 ```
-var Player require('./containers/radio/player');
+var Player require('react-triton-digital-player');
 ```
 
 #### *ES6*
 ```
-import Player from './containers/radio/player';
+import Player from 'react-triton-digital-player';
 ```
 
 ```
@@ -34,7 +43,7 @@ import Player from './containers/radio/player';
 
 ```
 import React, { Component } from 'react';
-import Player from './containers/radio/player';
+import Player from 'react-triton-digital-player';
 
 class App extends Component {
 	render() {
