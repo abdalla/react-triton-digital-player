@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.resume = exports.pause = exports.stop = exports.play = exports.setVolume = exports.getVolume = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -27,6 +28,36 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var player = void 0;
+
+var getVolume = exports.getVolume = function getVolume() {
+	player.getVolume();
+};
+
+var _setVolume = function _setVolume(newVol) {
+	player.setVolume(newVol);
+};
+
+exports.setVolume = _setVolume;
+var _play = function _play(station) {
+	player.play(station);
+};
+
+exports.play = _play;
+var _stop = function _stop() {
+	player.stop();
+};
+
+exports.stop = _stop;
+var _pause = function _pause() {
+	player.pause();
+};
+
+exports.pause = _pause;
+var _resume = function _resume() {
+	player.resume();
+};
+
+exports.resume = _resume;
 
 var Player = function (_Component) {
 	_inherits(Player, _Component);
@@ -54,6 +85,31 @@ var Player = function (_Component) {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
 			this.initPlayerSDK();
+		}
+	}, {
+		key: 'setVolume',
+		value: function setVolume(newVol) {
+			_setVolume(newVol);
+		}
+	}, {
+		key: 'play',
+		value: function play() {
+			_play({ station: this.state.station });
+		}
+	}, {
+		key: 'stop',
+		value: function stop() {
+			_stop();
+		}
+	}, {
+		key: 'pause',
+		value: function pause() {
+			_pause();
+		}
+	}, {
+		key: 'resume',
+		value: function resume() {
+			_resume();
 		}
 	}, {
 		key: 'initPlayerSDK',
@@ -146,71 +202,75 @@ var Player = function (_Component) {
 				'div',
 				null,
 				_react2.default.createElement('div', { id: 'td_container' }),
-				_react2.default.createElement(
-					'span',
-					null,
-					'Artist Name:'
-				),
-				this.state.artistName,
-				_react2.default.createElement('br', null),
-				_react2.default.createElement(
-					'span',
-					null,
-					'Music Title:'
-				),
-				this.state.musicTitle,
-				_react2.default.createElement(
+				options && !options.useItByMyOwn && _react2.default.createElement(
 					'div',
 					null,
-					options && options.showPlayButton && _react2.default.createElement(
-						'button',
-						{
-							onClick: function onClick(e) {
-								e.preventDefault();
-								player.play({ station: _this2.state.station });
-							} },
-						'PLAY'
-					)
-				),
-				_react2.default.createElement(
-					'div',
-					null,
-					options && options.showStopButton && _react2.default.createElement(
-						'button',
-						{
-							onClick: function onClick(e) {
-								e.preventDefault();
-								player.stop();
-							} },
-						' ',
-						'STOP'
-					)
-				),
-				_react2.default.createElement(
-					'div',
-					null,
-					options && options.showPauseButton && _react2.default.createElement(
-						'button',
-						{
-							onClick: function onClick(e) {
-								e.preventDefault();
-								player.pause();
-							} },
-						' ',
-						'PAUSE'
-					)
-				),
-				_react2.default.createElement(
-					'div',
-					null,
-					options && options.showResumeButton && _react2.default.createElement(
-						'button',
-						{
-							onClick: function onClick(e) {
-								e.preventDefault();
-								player.resume();
-							} },
-						'RESUME'
+					_react2.default.createElement(
+						'span',
+						null,
+						'Artist Name:'
+					),
+					this.state.artistName,
+					_react2.default.createElement('br', null),
+					_react2.default.createElement(
+						'span',
+						null,
+						'Music Title:'
+					),
+					this.state.musicTitle,
+					_react2.default.createElement(
+						'div',
+						null,
+						options && options.showPlayButton && _react2.default.createElement(
+							'button',
+							{
+								onClick: function onClick(e) {
+									e.preventDefault();
+									_this2.play();
+								} },
+							'PLAY'
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						null,
+						options && options.showStopButton && _react2.default.createElement(
+							'button',
+							{
+								onClick: function onClick(e) {
+									e.preventDefault();
+									_this2.stop();
+								} },
+							' ',
+							'STOP'
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						null,
+						options && options.showPauseButton && _react2.default.createElement(
+							'button',
+							{
+								onClick: function onClick(e) {
+									e.preventDefault();
+									_this2.pause();
+								} },
+							' ',
+							'PAUSE'
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						null,
+						options && options.showResumeButton && _react2.default.createElement(
+							'button',
+							{
+								onClick: function onClick(e) {
+									e.preventDefault();
+									_this2.resume();
+								} },
+							'RESUME'
+						)
 					)
 				)
 			);
