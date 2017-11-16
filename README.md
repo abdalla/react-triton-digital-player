@@ -34,10 +34,10 @@ import Player from 'react-triton-digital-player';
 ```
 
 ```
-<Player station="YOUR_STATION" options={options} />
+<Player station="YOUR_STATION" [options={options}] />
 ```
 
-*OBS:* **options are optionals.** 
+*OBS:* **options are optional.** 
 
 ###EXAMPLE
 
