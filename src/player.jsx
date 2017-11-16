@@ -4,6 +4,30 @@ import latinize from 'latinize';
 
 let player;
 
+export const getVolume = () => {
+	player.getVolume();
+};
+
+export const setVolume = newVol => {
+	player.setVolume(newVol);
+};
+
+export const play = station => {
+	player.play(station);
+};
+
+export const stop = () => {
+	player.stop();
+};
+
+export const pause = () => {
+	player.pause();
+};
+
+export const resume = () => {
+	player.resume();
+};
+
 class Player extends Component {
 	constructor(props, context) {
 		super(props, context);
@@ -22,6 +46,26 @@ class Player extends Component {
 
 	componentDidMount() {
 		this.initPlayerSDK();
+	}
+
+	setVolume(newVol) {
+		setVolume(newVol);
+	}
+
+	play() {
+		play({ station: this.state.station });
+	}
+
+	stop() {
+		stop();
+	}
+
+	pause() {
+		pause();
+	}
+
+	resume() {
+		resume();
 	}
 
 	initPlayerSDK() {
@@ -101,62 +145,67 @@ class Player extends Component {
 		return (
 			<div>
 				<div id="td_container" />
-				<span>Artist Name:</span>
-				{this.state.artistName}
-				<br />
+				{options &&
+					!options.useItByMyOwn && (
+						<div>
+							<span>Artist Name:</span>
+							{this.state.artistName}
+							<br />
 
-				<span>Music Title:</span>
-				{this.state.musicTitle}
-				<div>
-					{options &&
-						options.showPlayButton && (
-							<button
-								onClick={e => {
-									e.preventDefault();
-									player.play({ station: this.state.station });
-								}}>
-								PLAY
-							</button>
-						)}
-				</div>
-				<div>
-					{options &&
-						options.showStopButton && (
-							<button
-								onClick={e => {
-									e.preventDefault();
-									player.stop();
-								}}>
-								{' '}
-								STOP
-							</button>
-						)}
-				</div>
-				<div>
-					{options &&
-						options.showPauseButton && (
-							<button
-								onClick={e => {
-									e.preventDefault();
-									player.pause();
-								}}>
-								{' '}
-								PAUSE
-							</button>
-						)}
-				</div>
-				<div>
-					{options &&
-						options.showResumeButton && (
-							<button
-								onClick={e => {
-									e.preventDefault();
-									player.resume();
-								}}>
-								RESUME
-							</button>
-						)}
-				</div>
+							<span>Music Title:</span>
+							{this.state.musicTitle}
+							<div>
+								{options &&
+									options.showPlayButton && (
+										<button
+											onClick={e => {
+												e.preventDefault();
+												this.play();
+											}}>
+											PLAY
+										</button>
+									)}
+							</div>
+							<div>
+								{options &&
+									options.showStopButton && (
+										<button
+											onClick={e => {
+												e.preventDefault();
+												this.stop();
+											}}>
+											{' '}
+											STOP
+										</button>
+									)}
+							</div>
+							<div>
+								{options &&
+									options.showPauseButton && (
+										<button
+											onClick={e => {
+												e.preventDefault();
+												this.pause();
+											}}>
+											{' '}
+											PAUSE
+										</button>
+									)}
+							</div>
+							<div>
+								{options &&
+									options.showResumeButton && (
+										<button
+											onClick={e => {
+												e.preventDefault();
+												this.resume();
+											}}>
+											RESUME
+										</button>
+									)}
+							</div>
+						</div>
+					)}
 			</div>
 		);
 	}
