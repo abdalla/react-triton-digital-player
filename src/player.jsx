@@ -28,8 +28,8 @@ class Player extends Component {
 		player.setVolume(newVol);
 	}
 
-	static play() {
-		player.play({ station: this.state.station });
+	static play(params) {
+		player.play(params);
 	}
 
 	static stop() {
@@ -136,7 +136,7 @@ class Player extends Component {
 										<button
 											onClick={e => {
 												e.preventDefault();
-												this.play();
+												player.play({ station: this.state.station });
 											}}>
 											PLAY
 										</button>
@@ -148,9 +148,8 @@ class Player extends Component {
 										<button
 											onClick={e => {
 												e.preventDefault();
-												this.stop();
+												player.stop();
 											}}>
-											{' '}
 											STOP
 										</button>
 									)}
@@ -161,9 +160,8 @@ class Player extends Component {
 										<button
 											onClick={e => {
 												e.preventDefault();
-												this.pause();
+												player.pause();
 											}}>
-											{' '}
 											PAUSE
 										</button>
 									)}
@@ -174,7 +172,7 @@ class Player extends Component {
 										<button
 											onClick={e => {
 												e.preventDefault();
-												this.resume();
+												player.resume();
 											}}>
 											RESUME
 										</button>
