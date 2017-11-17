@@ -140,7 +140,7 @@ export default App;
 | Method    |  Args  |Options    | Description  |
 | ----------|--------|-----------|--------------|
 | setVolume | volume | 0-1       |The new volume percentage between 0 and 1. Example: 0.75 for 75% |
-| play      | params | see bellow |Start the playback of a live audio/video stream. |
+| play      | params | [see bellow](#play-params) |Start the playback of a live audio/video stream. |
 | stop      | -      | -          |Stop the stream.|
 | pause     | -      | -          |Pause the stream. |
 | resume    | -      | -          |Resume the stream. |
@@ -186,14 +186,18 @@ Properties
 > **trackingParameters** (Object). Required: No. 
 > The **trackingParameters** values are appended to the stream
 > URL. They are used to log information from player. 
+
 > Example: **{KEY1:'value1', KEY2:'value2', ... }** 
 > 
 > Example: Play the TRITONRADIOMUSIC station stream: 
+
 > *play( {station: 'TRITONRADIOMUSIC'} );*  
 > 
 > Example: Play the TRITONRADIOMUSICAAC mount stream: 
+> 
 > *play({mount: 'TRITONRADIOMUSICAAC'} );*   
 > 
 > Example: Play the TRITONRADIOMUSIC station stream with the connection timeout set to 60 minutes and the TimeShifting enabled.
+> 
 > *play( {station: 'TRITONRADIOMUSIC', connectionTimeOut:60, timeShift:true} );*
 
