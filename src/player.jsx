@@ -2,198 +2,183 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import latinize from 'latinize';
 
+import DefaultControls from './defaultControls';
+
 let player;
 
-class Player extends Component {
-	constructor(props, context) {
-		super(props, context);
+const PlayerWrapper = ControlsComponent => {
+	class Player extends Component {
+		constructor(props, context) {
+			super(props, context);
 
-		this.initPlayerSDK = this.initPlayerSDK.bind(this);
-		this.onPlayerReady = this.onPlayerReady.bind(this);
-		this.onConfigurationError = this.onConfigurationError.bind(this);
-		this.onModuleError = this.onModuleError.bind(this);
-		this.onTrackCuePoint = this.onTrackCuePoint.bind(this);
-		this.onAdBlockerDetected = this.onAdBlockerDetected.bind(this);
-	}
-
-	componentWillMount() {
-		this.setState({ station: this.props.station });
-	}
-
-	componentDidMount() {
-		this.initPlayerSDK();
-	}
-
-	static setVolume(newVol) {
-		player.setVolume(newVol);
-	}
-
-	static play(params) {
-		player.play(params);
-	}
-
-	static stop() {
-		player.stop();
-	}
-
-	static pause() {
-		player.pause();
-	}
-
-	static resume() {
-		player.resume();
-	}
-
-	initPlayerSDK() {
-		//Player SDK is ready to be used, this is where you can instantiate a new TDSdk instance.
-		//Player configuration: list of modules
-		const tdPlayerConfig = {
-			coreModules: [
-				{
-					id: 'MediaPlayer',
-					playerId: 'td_container'
-				}
-			],
-			playerReady: this.onPlayerReady,
-			configurationError: this.onConfigurationError,
-			moduleError: this.onModuleError,
-			adBlockerDetected: this.onAdBlockerDetected
-		};
-
-		//Player instance
-		player = new window.TDSdk(tdPlayerConfig);
-	}
-
-	onPlayerReady() {
-		const { options } = this.props;
-
-		player.addEventListener('track-cue-point', this.onTrackCuePoint);
-
-		if (options && options.autoPlay) {
-			player.play({ station: this.state.station });
+			this.initPlayerSDK = this.initPlayerSDK.bind(this);
+			this.onPlayerReady = this.onPlayerReady.bind(this);
+			this.onConfigurationError = this.onConfigurationError.bind(this);
+			this.onModuleError = this.onModuleError.bind(this);
+			this.onTrackCuePoint = this.onTrackCuePoint.bind(this);
+			this.onAdBlockerDetected = this.onAdBlockerDetected.bind(this);
 		}
-	}
 
-	onConfigurationError(object) {
-		this.setState({
-			errorCode: object.data.errors[0].code,
-			errorMessage: object.data.errors[0].message
-		});
-	}
+		componentWillMount() {
+			this.setState({ station: this.props.params.station });
+		}
 
-	onModuleError(object) {
-		this.setState({
-			errorCode: object.data.errors[0].code,
-			errorMessage: object.data.errors[0].message
-		});
-	}
+		componentDidMount() {
+			this.initPlayerSDK();
+		}
 
-	/* Callback function called to notify that a new Track CuePoint comes in. */
-	onTrackCuePoint(e) {
-		const { options } = this.props;
-		this.setState({
-			artistName: e.data.cuePoint.artistName,
-			musicTitle: e.data.cuePoint.cueTitle
-		});
+		increaseVolume(vol) {
+			let volume = player.getVolume() + vol;
 
-		if (options && options.setExternalProps) {
-			options.setExternalProps({
-				artistName: e.data.cuePoint.artistName,
-				formatedArtistName: latinize(e.data.cuePoint.artistName).replace(
-					' ',
-					'_'
-				),
-				musicTitle: e.data.cuePoint.cueTitle
+			if (volume === vol) {
+				player.unMute();
+			}
+
+			if (volume >= 1) {
+				volume = 1;
+			}
+
+			player.setVolume(volume);
+		}
+
+		decreaseVolume(vol) {
+			let volume = player.getVolume() - vol;
+
+			if (volume <= 0) {
+				volume = 0;
+				player.mute();
+			}
+
+			player.setVolume(volume);
+		}
+
+		setVolume(newVol) {
+			player.setVolume(newVol);
+		}
+
+		play(params) {
+			player.play(params);
+		}
+
+		stop() {
+			player.stop();
+		}
+
+		pause() {
+			player.pause();
+		}
+
+		resume() {
+			player.resume();
+		}
+
+		initPlayerSDK() {
+			//Player SDK is ready to be used, this is where you can instantiate a new TDSdk instance.
+			//Player configuration: list of modules
+			const tdPlayerConfig = {
+				coreModules: [
+					{
+						id: 'MediaPlayer',
+						playerId: 'td_container'
+					}
+				],
+				playerReady: this.onPlayerReady,
+				configurationError: this.onConfigurationError,
+				moduleError: this.onModuleError,
+				adBlockerDetected: this.onAdBlockerDetected
+			};
+
+			//Player instance
+			player = new window.TDSdk(tdPlayerConfig);
+		}
+
+		onPlayerReady() {
+			const { options } = this.props.params;
+
+			player.addEventListener('track-cue-point', this.onTrackCuePoint);
+
+			if (options && options.autoPlay) {
+				player.play({ station: this.state.station });
+			}
+		}
+
+		onConfigurationError(object) {
+			this.setState({
+				errorCode: object.data.errors[0].code,
+				errorMessage: object.data.errors[0].message
 			});
 		}
-	}
-	/* Callback function called to notify that an Ad-Blocker was detected */
-	onAdBlockerDetected() {
-		const { options } = this.props;
-		if (options && options.onAdBlockerDetected) {
-			options.onAdBlockerDetected();
+
+		onModuleError(object) {
+			this.setState({
+				errorCode: object.data.errors[0].code,
+				errorMessage: object.data.errors[0].message
+			});
+		}
+
+		/* Callback function called to notify that a new Track CuePoint comes in. */
+		onTrackCuePoint(e) {
+			const { options } = this.props.params;
+			this.setState({
+				artistName: e.data.cuePoint.artistName,
+				musicTitle: e.data.cuePoint.cueTitle
+			});
+
+			if (options && options.setExternalProps) {
+				options.setExternalProps({
+					artistName: e.data.cuePoint.artistName,
+					formatedArtistName: latinize(e.data.cuePoint.artistName).replace(
+						' ',
+						'_'
+					),
+					musicTitle: e.data.cuePoint.cueTitle
+				});
+			}
+		}
+		/* Callback function called to notify that an Ad-Blocker was detected */
+		onAdBlockerDetected() {
+			const { options } = this.props.params;
+			if (options && options.onAdBlockerDetected) {
+				options.onAdBlockerDetected();
+			}
+		}
+
+		render() {
+			return (
+				<div>
+					<div id="td_container" />
+					{!ControlsComponent && (
+						<DefaultControls
+							playerState={this.state}
+							onSetVolume={this.setVolume}
+							onIncreaseVolume={this.increaseVolume}
+							onDecreaseVolume={this.decreaseVolume}
+							onPlay={this.play}
+							onStop={this.stop}
+							onPause={this.pause}
+							onResume={this.resume}
+						/>
+					)}
+					{ControlsComponent && (
+						<ControlsComponent
+							playerState={this.state}
+							onSetVolume={this.setVolume}
+							onIncreaseVolume={this.increaseVolume}
+							onDecreaseVolume={this.decreaseVolume}
+							onPlay={this.play}
+							onStop={this.stop}
+							onPause={this.pause}
+							onResume={this.resume}
+						/>
+					)}
+				</div>
+			);
 		}
 	}
+	Player.propTypes = {
+		params: PropTypes.object.isRequired
+	};
 
-	render() {
-		const { options } = this.props;
-
-		return (
-			<div>
-				<div id="td_container" />
-				{options &&
-					!options.useItByMyOwn && (
-						<div>
-							<span>Artist Name:</span>
-							{this.state.artistName}
-							<br />
-
-							<span>Music Title:</span>
-							{this.state.musicTitle}
-							<div>
-								{options &&
-									options.showPlayButton && (
-										<button
-											onClick={e => {
-												e.preventDefault();
-												player.play({ station: this.state.station });
-											}}>
-											PLAY
-										</button>
-									)}
-							</div>
-							<div>
-								{options &&
-									options.showStopButton && (
-										<button
-											onClick={e => {
-												e.preventDefault();
-												player.stop();
-											}}>
-											STOP
-										</button>
-									)}
-							</div>
-							<div>
-								{options &&
-									options.showPauseButton && (
-										<button
-											onClick={e => {
-												e.preventDefault();
-												player.pause();
-											}}>
-											PAUSE
-										</button>
-									)}
-							</div>
-							<div>
-								{options &&
-									options.showResumeButton && (
-										<button
-											onClick={e => {
-												e.preventDefault();
-												player.resume();
-											}}>
-											RESUME
-										</button>
-									)}
-							</div>
-						</div>
-					)}
-			</div>
-		);
-	}
-}
-
-Player.propTypes = {
-	station: PropTypes.string.isRequired,
-	options: PropTypes.object
+	return Player;
 };
-
-export const setVolume = Player.setVolume;
-export const play = Player.play;
-export const stop = Player.stop;
-export const pause = Player.pause;
-export const resume = Player.resume;
-
-export default Player;
+export default PlayerWrapper;

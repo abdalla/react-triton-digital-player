@@ -25,45 +25,41 @@ yarn add react-triton-digital-player
 
 #### *ES5*
 ```
-var Player = require('react-triton-digital-player');
+var PlayerWrapper = require('react-triton-digital-player');
 ```
 
 #### *ES6*
 ```
-import Player from 'react-triton-digital-player';
+import PlayerWrapper from 'react-triton-digital-player';
 ```
-
-```
-<Player station="YOUR_STATION" [options={options}] />
-```
-
-*OBS:* **options are optional.** 
 
 ### EXAMPLE
 
 ```
 import React, { Component } from 'react';
-import Player from 'react-triton-digital-player';
+import PlayerWrapper from 'react-triton-digital-player';
+
+const Player = PlayerWrapper();
+
+const params = {
+	station: 'YOUR_STATION',
+	options: {
+		setExternalProps: this.setExternalProps,
+		onAdBlockerDetected: this.onAdBlockerDetected,
+		autoPlay: true
+	}
+};
 
 class App extends Component {
 	render() {
-	const options = {
-			setExternalProps: this.setExternalProps,
-			onAdBlockerDetected: this.onAdBlockerDetected,
-			useItByMyOwn: false,
-			autoPlay: true,
-			showPlayButton: true,
-			showStopButton: true,
-			showResumeButton: true,
-			showPauseButton: true
-  };
-  		
+
 		return (
 			<div className="App">
 				<header className="App-header">
 					<h1 className="App-title">MY APP</h1>
 				</header>
-				<Player station="YOUR_STATION" options={options} />
+				
+				<Player params={params} />
 			</div>
 		);
 	}
@@ -71,24 +67,31 @@ class App extends Component {
 
 export default App;
 ```
-# options
-| Option               |  Type    |Default    | Description  |
-| -------------------- |----------|-----------|--------------|
-| setExternalProps     | function | undefined |The player component will call this function providing a json with artist name and music title. |
-| onAdBlockerDetected  | function | undefined |The player will call this function when add block was detected. |
-| useItByMyOwn         | boolean  | false     |To use your own play, stop, pause, resume and volume component|
-| autoPlay             | boolean  | false     |Play will be automatically |
-| showPlayButton       | boolean  | false     |Will display the component play button |
-| showStopButton       | boolean  | false     |Will display the component stop button |
-| showPauseButton      | boolean  | false     |Will display the component pause button |
-| showResumeButton     | boolean  | false     |Will display the component resume button |
+*OBS:* **options are optional.** 
 
->**Note:** _the autoplay feature is disabled on mobile (iOS, Android) with HTML5. You must call the play function only after the result of a user action._
+# params
+All params: [see here](#play-params)
 
-# how to use your own components
+
+All options: [see here](#play-param-options)
+
+
+# how to use your own control component
 
 ```
-import Player, {setVolume, play, stop, pause, resume } from 'react-triton-digital-player';
+import PlayerWrapper from 'react-triton-digital-player';
+import myControls from '<path>';
+
+const Player = PlayerWrapper(myControls);
+
+const params = {
+	station: 'YOUR_STATION',
+	options: {
+		setExternalProps: this.setExternalProps,
+		onAdBlockerDetected: this.onAdBlockerDetected,
+		autoPlay: true
+	}
+};
 
 class App extends Component {
 	onAdBlockerDetected() {
@@ -100,35 +103,12 @@ class App extends Component {
 	}
 	
 	render() {
-	const options = {
-			setExternalProps: this.setExternalProps,
-			onAdBlockerDetected: this.onAdBlockerDetected,
-			useItByMyOwn: true,
-			autoPlay: true
-  };
-  		
-		return (
+  	return (
 			<div className="App">
 				<header className="App-header">
 					<h1 className="App-title">MY APP</h1>
 				</header>
-				<Player station="YOUR_STATION" options={options} />
-				
-				<button
-					onClick={e => {
-						e.preventDefault();
-						stop();
-					}}>
-					STOP
-				</button>
-
-				<button
-					onClick={e => {
-						e.preventDefault();
-						play({ station: 'YOUR_STATION' });
-					}}>
-					PLAY
-				</button>
+				<Player params={params} />
 			</div>
 		);
 	}
@@ -136,15 +116,71 @@ class App extends Component {
 
 export default App;
 ```
+#### myControls
+```
+import React from 'react';
+import PropTypes from 'prop-types';
+
+const myControls = props => {
+	return (
+		<div>
+			<button
+				onClick={e => {
+					e.preventDefault();
+					props.onStop();
+				}}>
+				STOP
+			</button>
+
+			<button
+				onClick={e => {
+					e.preventDefault();
+					props.onPlay({ station: props.playerState.station });
+				}}>
+				PLAY
+			</button>
+
+			<button
+				onClick={e => {
+					e.preventDefault();
+					props.onSetVolume(0.3);
+				}}>
+				VOLUME 0.30
+			</button>
+			<button
+				onClick={e => {
+					e.preventDefault();
+					props.onSetVolume(1);
+				}}>
+				VOLUME MAX
+			</button>
+		</div>
+	);
+};
+
+myControls.propTypes = {
+	playerState: PropTypes.object.isRequired,
+	onPlay: PropTypes.func,
+	onStop: PropTypes.func,
+	onPause: PropTypes.func,
+	onResume: PropTypes.func,
+	onIncreaseVolume: PropTypes.func,
+	onDecreaseVolume: PropTypes.func,
+	onSetVolume: PropTypes.func
+};
+
+export default myControls;
+```
 
 | Method    |  Args  |Options    | Description  |
 | ----------|--------|-----------|--------------|
-| setVolume | volume | 0-1       |The new volume percentage between 0 and 1. Example: 0.75 for 75% |
-| play      | params | [see bellow](#play-params) |Start the playback of a live audio/video stream. |
-| stop      | -      | -          |Stop the stream.|
-| pause     | -      | -          |Pause the stream. |
-| resume    | -      | -          |Resume the stream. |
-
+| onSetVolume | volume | 0-1       |The new volume percentage between 0 and 1. Example: 0.75 for 75% |
+| onIncreaseVolume | volume | 0-1       |Same setVolume but the value will increase the current volume with the value passed. |
+| onDecreaseVolume | volume | 0-1       |Same setVolume but the value will decrease the current volume with the value passed.|
+| onPlay      | params | [see here](#play-params) |Start the playback of a live audio/video stream. |
+| onStop      | -      | -          |Stop the stream.|
+| onPause     | -      | -          |Pause the stream. |
+| onResume    | -      | -          |Resume the stream. |
 
 
 ### Play Params 
@@ -201,3 +237,13 @@ Properties
 > 
 > *play( {station: 'TRITONRADIOMUSIC', connectionTimeOut:60, timeShift:true} );*
 
+### Play Param Options 
+All options are optional
+
+| Option               |  Type    |Default    | Description  |
+| -------------------- |----------|-----------|--------------|
+| setExternalProps     | function | undefined |The player component will call this function providing a json with artist name and music title. |
+| onAdBlockerDetected  | function | undefined |The player will call this function when add block was detected. |
+| autoPlay             | boolean  | false     |Play will be automatically |
+
+>**Note:** _the autoplay feature is disabled on mobile (iOS, Android) with HTML5. You must call the play function only after the result of a user action._
