@@ -25,33 +25,39 @@ yarn add react-triton-digital-player
 
 #### *ES5*
 ```
-var PlayerWrapper = require('react-triton-digital-player');
+var Player = require('react-triton-digital-player');
 ```
 
 #### *ES6*
 ```
-import PlayerWrapper from 'react-triton-digital-player';
+import Player from 'react-triton-digital-player';
 ```
 
 ### EXAMPLE
 
-```
+```jsx
 import React, { Component } from 'react';
-import PlayerWrapper from 'react-triton-digital-player';
-
-const Player = PlayerWrapper();
-
-const params = {
-	station: 'YOUR_STATION',
-	options: {
-		setExternalProps: this.setExternalProps,
-		onAdBlockerDetected: this.onAdBlockerDetected,
-		autoPlay: true
-	}
-};
+import Player from 'react-triton-digital-player';
 
 class App extends Component {
+	onAdBlockerDetected() {
+		console.log('AdBlockerDetected');
+	}
+
+	setExternalProps(props) {
+		console.log(props);
+	}
+	
 	render() {
+	
+		const params = {
+			station: 'YOUR_STATION',
+			options: {
+				setExternalProps: this.setExternalProps,
+				onAdBlockerDetected: this.onAdBlockerDetected,
+				autoPlay: true
+			}
+		};
 
 		return (
 			<div className="App">
@@ -79,19 +85,8 @@ All options: [see here](#play-param-options)
 # how to use your own control component
 
 ```
-import PlayerWrapper from 'react-triton-digital-player';
+import Player from 'react-triton-digital-player';
 import myControls from '<path>';
-
-const Player = PlayerWrapper(myControls);
-
-const params = {
-	station: 'YOUR_STATION',
-	options: {
-		setExternalProps: this.setExternalProps,
-		onAdBlockerDetected: this.onAdBlockerDetected,
-		autoPlay: true
-	}
-};
 
 class App extends Component {
 	onAdBlockerDetected() {
@@ -108,7 +103,7 @@ class App extends Component {
 				<header className="App-header">
 					<h1 className="App-title">MY APP</h1>
 				</header>
-				<Player params={params} />
+				<Player params={params}>{props => myControls(props)}</Player>
 			</div>
 		);
 	}
@@ -135,7 +130,7 @@ const myControls = props => {
 			<button
 				onClick={e => {
 					e.preventDefault();
-					props.onPlay({ station: props.playerState.station });
+					props.onPlay({ station: props.params.station });
 				}}>
 				PLAY
 			</button>

@@ -6,179 +6,174 @@ import DefaultControls from './defaultControls';
 
 let player;
 
-const PlayerWrapper = ControlsComponent => {
-	class Player extends Component {
-		constructor(props, context) {
-			super(props, context);
+class Player extends Component {
+	constructor(props, context) {
+		super(props, context);
 
-			this.initPlayerSDK = this.initPlayerSDK.bind(this);
-			this.onPlayerReady = this.onPlayerReady.bind(this);
-			this.onConfigurationError = this.onConfigurationError.bind(this);
-			this.onModuleError = this.onModuleError.bind(this);
-			this.onTrackCuePoint = this.onTrackCuePoint.bind(this);
-			this.onAdBlockerDetected = this.onAdBlockerDetected.bind(this);
+		this.initPlayerSDK = this.initPlayerSDK.bind(this);
+		this.onPlayerReady = this.onPlayerReady.bind(this);
+		this.onConfigurationError = this.onConfigurationError.bind(this);
+		this.onModuleError = this.onModuleError.bind(this);
+		this.onTrackCuePoint = this.onTrackCuePoint.bind(this);
+		this.onAdBlockerDetected = this.onAdBlockerDetected.bind(this);
+	}
+
+	componentWillMount() {
+		this.setState({ station: this.props.params.station });
+	}
+
+	componentDidMount() {
+		this.initPlayerSDK();
+	}
+
+	increaseVolume(vol) {
+		let volume = player.getVolume() + vol;
+
+		if (volume === vol) {
+			player.unMute();
 		}
 
-		componentWillMount() {
-			this.setState({ station: this.props.params.station });
+		if (volume >= 1) {
+			volume = 1;
 		}
 
-		componentDidMount() {
-			this.initPlayerSDK();
+		player.setVolume(volume);
+	}
+
+	decreaseVolume(vol) {
+		let volume = player.getVolume() - vol;
+
+		if (volume <= 0) {
+			volume = 0;
+			player.mute();
 		}
 
-		increaseVolume(vol) {
-			let volume = player.getVolume() + vol;
+		player.setVolume(volume);
+	}
 
-			if (volume === vol) {
-				player.unMute();
-			}
+	setVolume(newVol) {
+		player.setVolume(newVol);
+	}
 
-			if (volume >= 1) {
-				volume = 1;
-			}
+	play(params) {
+		player.play(params);
+	}
 
-			player.setVolume(volume);
-		}
+	stop() {
+		player.stop();
+	}
 
-		decreaseVolume(vol) {
-			let volume = player.getVolume() - vol;
+	pause() {
+		player.pause();
+	}
 
-			if (volume <= 0) {
-				volume = 0;
-				player.mute();
-			}
+	resume() {
+		player.resume();
+	}
 
-			player.setVolume(volume);
-		}
+	initPlayerSDK() {
+		//Player SDK is ready to be used, this is where you can instantiate a new TDSdk instance.
+		//Player configuration: list of modules
+		const tdPlayerConfig = {
+			coreModules: [
+				{
+					id: 'MediaPlayer',
+					playerId: 'td_container'
+				}
+			],
+			playerReady: this.onPlayerReady,
+			configurationError: this.onConfigurationError,
+			moduleError: this.onModuleError,
+			adBlockerDetected: this.onAdBlockerDetected
+		};
 
-		setVolume(newVol) {
-			player.setVolume(newVol);
-		}
+		//Player instance
+		player = new window.TDSdk(tdPlayerConfig);
+	}
 
-		play(params) {
-			player.play(params);
-		}
+	onPlayerReady() {
+		const { options } = this.props.params;
 
-		stop() {
-			player.stop();
-		}
+		player.addEventListener('track-cue-point', this.onTrackCuePoint);
 
-		pause() {
-			player.pause();
-		}
-
-		resume() {
-			player.resume();
-		}
-
-		initPlayerSDK() {
-			//Player SDK is ready to be used, this is where you can instantiate a new TDSdk instance.
-			//Player configuration: list of modules
-			const tdPlayerConfig = {
-				coreModules: [
-					{
-						id: 'MediaPlayer',
-						playerId: 'td_container'
-					}
-				],
-				playerReady: this.onPlayerReady,
-				configurationError: this.onConfigurationError,
-				moduleError: this.onModuleError,
-				adBlockerDetected: this.onAdBlockerDetected
-			};
-
-			//Player instance
-			player = new window.TDSdk(tdPlayerConfig);
-		}
-
-		onPlayerReady() {
-			const { options } = this.props.params;
-
-			player.addEventListener('track-cue-point', this.onTrackCuePoint);
-
-			if (options && options.autoPlay) {
-				player.play({ station: this.state.station });
-			}
-		}
-
-		onConfigurationError(object) {
-			this.setState({
-				errorCode: object.data.errors[0].code,
-				errorMessage: object.data.errors[0].message
-			});
-		}
-
-		onModuleError(object) {
-			this.setState({
-				errorCode: object.data.errors[0].code,
-				errorMessage: object.data.errors[0].message
-			});
-		}
-
-		/* Callback function called to notify that a new Track CuePoint comes in. */
-		onTrackCuePoint(e) {
-			const { options } = this.props.params;
-			this.setState({
-				artistName: e.data.cuePoint.artistName,
-				musicTitle: e.data.cuePoint.cueTitle
-			});
-
-			if (options && options.setExternalProps) {
-				options.setExternalProps({
-					artistName: e.data.cuePoint.artistName,
-					formatedArtistName: latinize(e.data.cuePoint.artistName).replace(
-						' ',
-						'_'
-					),
-					musicTitle: e.data.cuePoint.cueTitle
-				});
-			}
-		}
-		/* Callback function called to notify that an Ad-Blocker was detected */
-		onAdBlockerDetected() {
-			const { options } = this.props.params;
-			if (options && options.onAdBlockerDetected) {
-				options.onAdBlockerDetected();
-			}
-		}
-
-		render() {
-			return (
-				<div>
-					<div id="td_container" />
-					{!ControlsComponent && (
-						<DefaultControls
-							playerState={this.state}
-							onSetVolume={this.setVolume}
-							onIncreaseVolume={this.increaseVolume}
-							onDecreaseVolume={this.decreaseVolume}
-							onPlay={this.play}
-							onStop={this.stop}
-							onPause={this.pause}
-							onResume={this.resume}
-						/>
-					)}
-					{ControlsComponent && (
-						<ControlsComponent
-							playerState={this.state}
-							onSetVolume={this.setVolume}
-							onIncreaseVolume={this.increaseVolume}
-							onDecreaseVolume={this.decreaseVolume}
-							onPlay={this.play}
-							onStop={this.stop}
-							onPause={this.pause}
-							onResume={this.resume}
-						/>
-					)}
-				</div>
-			);
+		if (options && options.autoPlay) {
+			player.play({ station: this.state.station });
 		}
 	}
-	Player.propTypes = {
-		params: PropTypes.object.isRequired
-	};
 
-	return Player;
+	onConfigurationError(object) {
+		this.setState({
+			errorCode: object.data.errors[0].code,
+			errorMessage: object.data.errors[0].message
+		});
+	}
+
+	onModuleError(object) {
+		this.setState({
+			errorCode: object.data.errors[0].code,
+			errorMessage: object.data.errors[0].message
+		});
+	}
+
+	/* Callback function called to notify that a new Track CuePoint comes in. */
+	onTrackCuePoint(e) {
+		const { options } = this.props.params;
+		this.setState({
+			artistName: e.data.cuePoint.artistName,
+			musicTitle: e.data.cuePoint.cueTitle
+		});
+
+		if (options && options.setExternalProps) {
+			options.setExternalProps({
+				artistName: e.data.cuePoint.artistName,
+				formatedArtistName: latinize(e.data.cuePoint.artistName).replace(' ', '_'),
+				musicTitle: e.data.cuePoint.cueTitle
+			});
+		}
+	}
+	/* Callback function called to notify that an Ad-Blocker was detected */
+	onAdBlockerDetected() {
+		const { options } = this.props.params;
+		if (options && options.onAdBlockerDetected) {
+			options.onAdBlockerDetected();
+		}
+	}
+
+	render() {
+		return (
+			<div>
+				<div id="td_container" />
+				{!this.props.children && (
+					<DefaultControls
+						playerState={this.state}
+						onSetVolume={this.setVolume}
+						onIncreaseVolume={this.increaseVolume}
+						onDecreaseVolume={this.decreaseVolume}
+						onPlay={this.play}
+						onStop={this.stop}
+						onPause={this.pause}
+						onResume={this.resume}
+					/>
+				)}
+
+				{this.props.children &&
+					this.props.children({
+						params: this.props.params,
+						playerState: this.state,
+						onPlay: this.play,
+						onStop: this.stop,
+						onPause: this.pause,
+						onResume: this.resume,
+						onIncreaseVolume: this.increaseVolume,
+						onDecreaseVolume: this.decreaseVolume,
+						onSetVolume: this.setVolume
+					})}
+			</div>
+		);
+	}
+}
+Player.propTypes = {
+	params: PropTypes.object.isRequired
 };
-export default PlayerWrapper;
+
+export default Player;
