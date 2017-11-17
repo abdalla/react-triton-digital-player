@@ -171,7 +171,7 @@ var Player = function (_Component) {
 							{
 								onClick: function onClick(e) {
 									e.preventDefault();
-									_this2.play();
+									player.play({ station: _this2.state.station });
 								} },
 							'PLAY'
 						)
@@ -184,9 +184,8 @@ var Player = function (_Component) {
 							{
 								onClick: function onClick(e) {
 									e.preventDefault();
-									_this2.stop();
+									player.stop();
 								} },
-							' ',
 							'STOP'
 						)
 					),
@@ -198,9 +197,8 @@ var Player = function (_Component) {
 							{
 								onClick: function onClick(e) {
 									e.preventDefault();
-									_this2.pause();
+									player.pause();
 								} },
-							' ',
 							'PAUSE'
 						)
 					),
@@ -212,7 +210,7 @@ var Player = function (_Component) {
 							{
 								onClick: function onClick(e) {
 									e.preventDefault();
-									_this2.resume();
+									player.resume();
 								} },
 							'RESUME'
 						)
@@ -227,8 +225,8 @@ var Player = function (_Component) {
 		}
 	}, {
 		key: 'play',
-		value: function play() {
-			player.play({ station: this.state.station });
+		value: function play(params) {
+			player.play(params);
 		}
 	}, {
 		key: 'stop',
