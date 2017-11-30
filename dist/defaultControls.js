@@ -46,6 +46,32 @@ var DefaultControls = function DefaultControls(props) {
 		),
 		_react2.default.createElement(
 			'div',
+			{ className: 'player-details' },
+			_react2.default.createElement(
+				'div',
+				{ className: 'player-details-artistName' },
+				_react2.default.createElement(
+					'span',
+					null,
+					'NEXT Artist: '
+				),
+				' ',
+				props.playerState.next && props.playerState.next.artistName
+			),
+			_react2.default.createElement(
+				'div',
+				{ className: 'player-details-musicTitle' },
+				_react2.default.createElement(
+					'span',
+					null,
+					'NEXT Music: '
+				),
+				' ',
+				props.playerState.next && props.playerState.next.musicTitle
+			)
+		),
+		_react2.default.createElement(
+			'div',
 			{ className: 'player-buttons' },
 			_react2.default.createElement(
 				'div',

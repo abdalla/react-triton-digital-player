@@ -44,8 +44,9 @@ var Player = function (_Component) {
 		_this.onPlayerReady = _this.onPlayerReady.bind(_this);
 		_this.onConfigurationError = _this.onConfigurationError.bind(_this);
 		_this.onModuleError = _this.onModuleError.bind(_this);
-		_this.onTrackCuePoint = _this.onTrackCuePoint.bind(_this);
 		_this.onAdBlockerDetected = _this.onAdBlockerDetected.bind(_this);
+		_this.onTrackCuePoint = _this.onTrackCuePoint.bind(_this);
+		_this.onCustomCuePoinMain = _this.onCustomCuePoinMain.bind(_this);
 		return _this;
 	}
 
@@ -137,6 +138,7 @@ var Player = function (_Component) {
 
 
 			player.addEventListener('track-cue-point', this.onTrackCuePoint);
+			player.addEventListener('custom-cue-point', this.onCustomCuePoinMain);
 
 			if (options && options.autoPlay) {
 				player.play({ station: this.state.station });
@@ -168,17 +170,53 @@ var Player = function (_Component) {
 
 			this.setState({
 				artistName: e.data.cuePoint.artistName,
+				formatedArtistName: (0, _latinize2.default)(e.data.cuePoint.artistName).replace(' ', ''),
 				musicTitle: e.data.cuePoint.cueTitle
 			});
 
 			if (options && options.setExternalProps) {
 				options.setExternalProps({
 					artistName: e.data.cuePoint.artistName,
-					formatedArtistName: (0, _latinize2.default)(e.data.cuePoint.artistName).replace(' ', '_'),
-					musicTitle: e.data.cuePoint.cueTitle
+					formatedArtistName: (0, _latinize2.default)(e.data.cuePoint.artistName).replace(' ', ''),
+					musicTitle: e.data.cuePoint.cueTitle,
+					next: {
+						artistName: this.state.next && this.state.next.artistName,
+						formatedArtistName: this.state.next && this.state.next.formatedArtistName,
+						musicTitle: this.state.next && this.state.next.musicTitle
+					}
 				});
 			}
 		}
+	}, {
+		key: 'onCustomCuePoinMain',
+		value: function onCustomCuePoinMain(e) {
+			var options = this.props.params.options;
+
+
+			this.setState({
+				next: {
+					artistName: e.data.cuePoint.parameters.custom_next_song_artist,
+					formatedArtistName: (0, _latinize2.default)(e.data.cuePoint.parameters.custom_next_song_artist).replace(' ', ''),
+					musicTitle: e.data.cuePoint.parameters.custom_next_song_title
+				}
+			});
+
+			if (options && options.setExternalProps) {
+				options.setExternalProps({
+					artistName: this.state.artistName,
+					formatedArtistName: this.state.formatedArtistName,
+					musicTitle: this.state.musicTitle,
+					next: {
+						artistName: e.data.cuePoint.parameters.custom_next_song_artist,
+						formatedArtistName: (0, _latinize2.default)(e.data.cuePoint.parameters.custom_next_song_artist).replace(' ', ''),
+						musicTitle: e.data.cuePoint.parameters.custom_next_song_title
+					}
+				});
+			}
+
+			//window.playerAudio.onCustomCuePoint(e);
+		}
+
 		/* Callback function called to notify that an Ad-Blocker was detected */
 
 	}, {

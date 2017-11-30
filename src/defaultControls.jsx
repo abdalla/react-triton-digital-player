@@ -12,6 +12,19 @@ const DefaultControls = props => (
 				<span>Music: </span> {props.playerState.musicTitle}
 			</div>
 		</div>
+
+		<div className="player-details">
+			<div className="player-details-artistName">
+				<span>NEXT Artist: </span>{' '}
+				{props.playerState.next && props.playerState.next.artistName}
+			</div>
+
+			<div className="player-details-musicTitle">
+				<span>NEXT Music: </span>{' '}
+				{props.playerState.next && props.playerState.next.musicTitle}
+			</div>
+		</div>
+
 		<div className="player-buttons">
 			<div className="player-buttons-play">
 				<button

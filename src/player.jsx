@@ -14,8 +14,9 @@ class Player extends Component {
 		this.onPlayerReady = this.onPlayerReady.bind(this);
 		this.onConfigurationError = this.onConfigurationError.bind(this);
 		this.onModuleError = this.onModuleError.bind(this);
-		this.onTrackCuePoint = this.onTrackCuePoint.bind(this);
 		this.onAdBlockerDetected = this.onAdBlockerDetected.bind(this);
+		this.onTrackCuePoint = this.onTrackCuePoint.bind(this);
+		this.onCustomCuePoinMain = this.onCustomCuePoinMain.bind(this);
 	}
 
 	componentWillMount() {
@@ -95,6 +96,7 @@ class Player extends Component {
 		const { options } = this.props.params;
 
 		player.addEventListener('track-cue-point', this.onTrackCuePoint);
+		player.addEventListener('custom-cue-point', this.onCustomCuePoinMain);
 
 		if (options && options.autoPlay) {
 			player.play({ station: this.state.station });
@@ -120,17 +122,59 @@ class Player extends Component {
 		const { options } = this.props.params;
 		this.setState({
 			artistName: e.data.cuePoint.artistName,
+			formatedArtistName: latinize(e.data.cuePoint.artistName).replace(' ', ''),
 			musicTitle: e.data.cuePoint.cueTitle
 		});
 
 		if (options && options.setExternalProps) {
 			options.setExternalProps({
 				artistName: e.data.cuePoint.artistName,
-				formatedArtistName: latinize(e.data.cuePoint.artistName).replace(' ', '_'),
-				musicTitle: e.data.cuePoint.cueTitle
+				formatedArtistName: latinize(e.data.cuePoint.artistName).replace(
+					' ',
+					''
+				),
+				musicTitle: e.data.cuePoint.cueTitle,
+				next: {
+					artistName: this.state.next && this.state.next.artistName,
+					formatedArtistName:
+						this.state.next && this.state.next.formatedArtistName,
+					musicTitle: this.state.next && this.state.next.musicTitle
+				}
 			});
 		}
 	}
+
+	onCustomCuePoinMain(e) {
+		const { options } = this.props.params;
+
+		this.setState({
+			next: {
+				artistName: e.data.cuePoint.parameters.custom_next_song_artist,
+				formatedArtistName: latinize(
+					e.data.cuePoint.parameters.custom_next_song_artist
+				).replace(' ', ''),
+				musicTitle: e.data.cuePoint.parameters.custom_next_song_title
+			}
+		});
+
+		if (options && options.setExternalProps) {
+			options.setExternalProps({
+				artistName: this.state.artistName,
+				formatedArtistName: this.state.formatedArtistName,
+				musicTitle: this.state.musicTitle,
+				next: {
+					artistName: e.data.cuePoint.parameters.custom_next_song_artist,
+					formatedArtistName: latinize(
+						e.data.cuePoint.parameters.custom_next_song_artist
+					).replace(' ', ''),
+					musicTitle: e.data.cuePoint.parameters.custom_next_song_title
+				}
+			});
+		}
+
+		//window.playerAudio.onCustomCuePoint(e);
+	}
+
 	/* Callback function called to notify that an Ad-Blocker was detected */
 	onAdBlockerDetected() {
 		const { options } = this.props.params;
