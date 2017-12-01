@@ -1,6 +1,6 @@
 {
   "name": "react-triton-digital-player",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "react component to use triton digital sdk into react app",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "keywords": [
     "triton",
-    "digital",git tag -d 12345
+    "digital",
     "online",
     "stream",
     "radio",
